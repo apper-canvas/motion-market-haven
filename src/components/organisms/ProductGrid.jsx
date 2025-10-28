@@ -2,29 +2,32 @@ import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import ProductCard from "@/components/molecules/ProductCard";
 import { productService } from "@/services/api/productService";
+import { recommendationService } from "@/services/api/recommendationService";
 import { filterProducts, sortProducts } from "@/utils/productFilters";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 
-const ProductGrid = ({ category = null, featured = false, limit = null }) => {
+const ProductGrid = ({ category = null, featured = false, recommended = false, limit = null }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
   const filters = useSelector((state) => state.filters);
 
-  useEffect(() => {
+useEffect(() => {
     loadProducts();
-  }, [category, featured]);
+  }, [category, featured, recommended]);
 
-  const loadProducts = async () => {
+const loadProducts = async () => {
     try {
       setLoading(true);
       setError(null);
       
       let data;
-      if (category) {
+      if (recommended) {
+        data = await recommendationService.getPersonalizedRecommendations(limit || 12);
+      } else if (category) {
         data = await productService.getByCategory(category);
       } else if (featured) {
         data = await productService.getFeatured();

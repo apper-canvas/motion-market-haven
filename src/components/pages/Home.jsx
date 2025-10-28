@@ -80,6 +80,20 @@ const Home = () => {
         </div>
       </section>
 
+{/* Recommended For You Section */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display text-3xl font-bold">Recommended For You</h2>
+          <Link to="/search">
+            <Button variant="ghost" icon="ArrowRight">
+              View All
+            </Button>
+          </Link>
+        </div>
+        
+        <ProductGrid recommended={true} limit={8} />
+      </section>
+
       {/* Featured Products Section */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">

@@ -5,13 +5,14 @@ import { addToCart } from "@/store/cartSlice";
 import { toast } from "react-toastify";
 import { productService } from "@/services/api/productService";
 import { reviewService } from "@/services/api/reviewService";
+import { recommendationService } from "@/services/api/recommendationService";
 import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
 import Select from "@/components/atoms/Select";
 import Input from "@/components/atoms/Input";
 import StarRating from "@/components/molecules/StarRating";
 import WishlistButton from "@/components/molecules/WishlistButton";
-import ProductGrid from "@/components/organisms/ProductGrid";
+import ProductCard from "@/components/molecules/ProductCard";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import ApperIcon from "@/components/ApperIcon";
@@ -44,7 +45,7 @@ const [product, setProduct] = useState(null);
     loadProductData();
   }, [id]);
 
-  const loadProductData = async () => {
+const loadProductData = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -52,7 +53,7 @@ const [product, setProduct] = useState(null);
       const [productData, reviewsData, recommendedData] = await Promise.all([
         productService.getById(id),
         reviewService.getByProductId(id),
-        productService.getRecommended(id)
+        recommendationService.getSimilarProducts(id, 8)
       ]);
       
       setProduct(productData);
@@ -611,30 +612,13 @@ const handleVoteHelpful = async (reviewId) => {
         </div>
       )}
 
-      {/* Recommended Products */}
+{/* Recommended Products */}
       {recommendations.length > 0 && (
         <div className="space-y-6">
           <h3 className="font-display font-semibold text-2xl">You Might Also Like</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {recommendations.map((product) => (
-              <div key={product.Id} className="bg-surface rounded-xl border border-gray-100 overflow-hidden hover:shadow-card-hover transition-shadow duration-200">
-                <Link to={`/product/${product.Id}`}>
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full aspect-square object-cover"
-                  />
-                  <div className="p-4">
-                    <p className="text-sm text-gray-600 mb-1">{product.brand}</p>
-                    <h4 className="font-medium text-gray-900 mb-2 line-clamp-2">{product.name}</h4>
-                    <div className="flex items-center gap-2 mb-2">
-                      <StarRating rating={product.rating} size={14} />
-                      <span className="text-sm text-gray-600">({product.reviewCount})</span>
-                    </div>
-                    <p className="font-bold text-gray-900">{formatPrice(product.price).price}</p>
-                  </div>
-                </Link>
-              </div>
+              <ProductCard key={product.Id} product={product} />
             ))}
           </div>
         </div>
