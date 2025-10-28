@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import ApperIcon from "@/components/ApperIcon";
 
 const StarRating = ({ 
@@ -9,10 +10,12 @@ const StarRating = ({
   interactive = false,
   onChange
 }) => {
-  const stars = Array.from({ length: maxRating }, (_, index) => {
+  const [hoverRating, setHoverRating] = React.useState(0);
+const stars = Array.from({ length: maxRating }, (_, index) => {
     const starValue = index + 1;
-    const isFilled = starValue <= rating;
-    const isHalfFilled = starValue - 0.5 <= rating && starValue > rating;
+    const displayRating = interactive && hoverRating > 0 ? hoverRating : rating;
+    const isFilled = starValue <= displayRating;
+    const isHalfFilled = starValue - 0.5 <= displayRating && starValue > displayRating;
 
     return (
       <button
@@ -20,6 +23,8 @@ const StarRating = ({
         type="button"
         disabled={!interactive}
         onClick={() => interactive && onChange?.(starValue)}
+        onMouseEnter={() => interactive && setHoverRating(starValue)}
+        onMouseLeave={() => interactive && setHoverRating(0)}
         className={`transition-colors duration-150 ${
           interactive ? "hover:text-accent cursor-pointer" : "cursor-default"
         }`}
