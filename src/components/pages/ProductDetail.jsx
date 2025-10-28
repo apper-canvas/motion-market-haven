@@ -385,14 +385,10 @@ const handleVoteHelpful = async (reviewId) => {
               {product.stock === 0 ? "Out of Stock" : "Add to Cart"}
             </Button>
             
-            <Button
-              variant="secondary"
-              className="w-full py-3"
-              size="lg"
-              icon="Heart"
-            >
-              Add to Wishlist
-            </Button>
+<WishlistButton 
+              productId={product.Id} 
+              className="w-full py-3 px-6 rounded-lg border-2 border-gray-300 hover:border-primary bg-white hover:bg-primary/5 transition-all duration-200 flex items-center justify-center gap-2 text-base font-semibold"
+            />
           </div>
 
           {/* Description */}
